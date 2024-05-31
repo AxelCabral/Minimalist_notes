@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:offline_database_notes/models/note_database.dart';
 import 'package:offline_database_notes/pages/notes_page.dart';
+import 'package:offline_database_notes/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -9,8 +10,14 @@ void main() async {
   await NoteDatabase.initialize();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => NoteDatabase(),
+    MultiProvider(
+      providers: [
+        // Theme Provider
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+
+        // Note Provider
+        ChangeNotifierProvider(create: (context) => NoteDatabase()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -21,9 +28,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NotesPage(),
+      home: const NotesPage(),
+      theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
 }
